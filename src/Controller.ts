@@ -88,7 +88,6 @@ const Controller = {
     const [
       drawRip,
       drawCar,
-      drawDate,
       drawScore,
       startOrigin,
       startHeight
@@ -99,7 +98,6 @@ const Controller = {
       BaseDrawer.clearScreen(gui);
       drawRip();
       drawCar();
-      drawDate();
       drawScore();
 
       await delay(1);

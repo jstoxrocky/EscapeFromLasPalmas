@@ -1,9 +1,10 @@
 import Location from './Location';
+import AlphaColor from '../AlphaColor';
 
 interface Exhaust {
   loc: Location;
   radius: number;
-  color: string;
+  alphaColor: AlphaColor;
   dx: number;
   dy: number;
   age: number;

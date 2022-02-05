@@ -1,36 +1,45 @@
 import ExhaustCompanionApi from './api/ExhaustCompanionApi';
+import AlphaColor from './AlphaColor';
 
 const R = 100;
 const G = 150;
 const B = 200;
 const REV_RADIUS = 25;
-const REV_DISPLAY_THRESHOLD = 0.01;
+const HIGH_EXHAUST_DISPLAY_THRESHOLD = 0.01;
 const IDLE_RADIUS = 10;
-const IDLE_DISPLAY_THRESHOLD = 0.75;
+const LOW_EXHAUST_DISPLAY_THRESHOLD = 0.75;
 const MAX_AGE = 100;
 const ALPHA_MULTIPLIER = 0.00133;
-const SPEED = -10;
+const COMET_SPEED = -15;
+const COMET_EXHAUST_DRIFT = 1;
+const EXHAUST_SPEED = -10;
 const GROW_RATE = 1;
 
 const ExhaustCompanion: ExhaustCompanionApi = {
-  new: (loc, radius, dx, dy, color) => ({
+  new: (loc, radius, dx, dy, alphaColor) => ({
     loc,
     radius,
-    color,
+    alphaColor,
     dx,
     dy,
     age: 0,
   }),
 
   maybeNewCarExhaust: (loc, isIdling) => {
-    const maybeRadius = ExhaustCompanion.getRadius(isIdling);
-    return maybeRadius.map((radius) => ExhaustCompanion.new(loc, radius, SPEED, Math.random() - 0.5, ExhaustCompanion.exhaustColor(0)));
+    const age = 0;
+    const alpha = ExhaustCompanion.calcAlpha(age);
+    const alphaColor = new AlphaColor(R, G, B, alpha)
+    const maybeRadius = isIdling ? ExhaustCompanion.lowLikelihoodOfSmoke(): ExhaustCompanion.highLikelihoodOfSmoke();
+    const dy = Math.random() - 0.5;
+    return maybeRadius.map((radius) => ExhaustCompanion.new(loc, radius, EXHAUST_SPEED, dy, alphaColor));
   },
 
   maybeNewCometExhaust: (loc) => {
-    const maybeRadius = ExhaustCompanion.getRadius(false);
-    const color = ExhaustCompanion.smokeColor(0);
-    return maybeRadius.map(radius => ExhaustCompanion.new(loc, radius, 1, -15, color));
+    const age = 0;
+    const alpha = ExhaustCompanion.calcAlpha(age);
+    const alphaColor = new AlphaColor(R, G, B, alpha)
+    const maybeRadius = ExhaustCompanion.highLikelihoodOfSmoke();
+    return maybeRadius.map(radius => ExhaustCompanion.new(loc, radius, COMET_EXHAUST_DRIFT, COMET_SPEED, alphaColor));
   },
 
   update: (exhaust) => {
@@ -38,10 +47,11 @@ const ExhaustCompanion: ExhaustCompanionApi = {
     const y = exhaust.loc.y + exhaust.dy;
     const loc = { ...exhaust.loc, x, y };
     const age = exhaust.age + 1;
+    const alpha = ExhaustCompanion.calcAlpha(age);
+    const alphaColor = new AlphaColor(exhaust.alphaColor.r, exhaust.alphaColor.g, exhaust.alphaColor.b, alpha)
     const radius = exhaust.radius + GROW_RATE;
-    const color = ExhaustCompanion.exhaustColor(age);
     return {
-      ...exhaust, loc, age, color, radius,
+      ...exhaust, loc, age, alphaColor, radius,
     };
   },
 
@@ -54,20 +64,19 @@ const ExhaustCompanion: ExhaustCompanionApi = {
       });
   },
 
-  getRadius: (isIdling) => {
-    if (isIdling) {
-      return Math.random() > IDLE_DISPLAY_THRESHOLD
-        ? [IDLE_RADIUS * Math.random()]
-        : [];
-    }
-    return Math.random() > REV_DISPLAY_THRESHOLD
+  highLikelihoodOfSmoke: () => {
+    return Math.random() > HIGH_EXHAUST_DISPLAY_THRESHOLD
       ? [REV_RADIUS * Math.random()]
       : [];
   },
 
-  exhaustColor: (age) => `rgb(${R}, ${G}, ${B}, ${(MAX_AGE - age * 4) * ALPHA_MULTIPLIER})`,
+  lowLikelihoodOfSmoke: () => {
+    return Math.random() > LOW_EXHAUST_DISPLAY_THRESHOLD
+      ? [IDLE_RADIUS * Math.random()]
+      : [];
+  },
 
-  smokeColor: (age) => `rgb(255, 0, 0, ${(MAX_AGE - age * 4) * ALPHA_MULTIPLIER})`,
+  calcAlpha: (age: number) => (MAX_AGE - age * 4) * ALPHA_MULTIPLIER,
 };
 
 export default ExhaustCompanion;

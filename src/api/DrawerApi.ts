@@ -53,7 +53,6 @@ interface DrawerApi {
     () => void,
     () => void,
     () => void,
-    () => void,
     number,
     number,
   ];

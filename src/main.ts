@@ -5,6 +5,7 @@ import loadImages from './imageLoaders';
 import loadNightImages from './nightImageLoaders';
 import loadDayImages from './dayImageLoaders';
 import loadMontageImages from './montageImageLoaders';
+import loadCarImages from './carImageLoaders';
 import loadFonts from './fonts';
 import Screen from './api/Screen';
 import GameState from './api/GameState';
@@ -21,13 +22,15 @@ const setScreen: Setter<Screen> = s => { screen = s}
 let pausedFrameId = 0;
 
 loadImages.then(images => {
-  loadNightImages.then(nightImages => {
-    loadDayImages.then(dayImages => {
-      loadMontageImages.then(montageImages => {
-        loadFonts.then(fonts => {
-          gui = GuiCompanion.new(canvas, images, nightImages, dayImages, fonts);
-          const asyncs = Controller.getMontageDrawers(gui, montageImages);
-          playMontage(asyncs);
+  loadCarImages.then(carImages => {
+    loadNightImages.then(nightImages => {
+      loadDayImages.then(dayImages => {
+        loadMontageImages.then(montageImages => {
+          loadFonts.then(fonts => {
+            gui = GuiCompanion.new(canvas, images, nightImages, dayImages, carImages, fonts);
+            const asyncs = Controller.getMontageDrawers(gui, montageImages);
+            playMontage(asyncs);
+          });
         });
       });
     });

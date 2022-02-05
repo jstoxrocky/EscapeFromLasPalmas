@@ -1,14 +1,12 @@
 import Hero from './Hero';
 import Comet from './Comet';
 import Circle from './Circle';
-import Rect from './Rect';
 import Location from './Location';
 import GameState from './GameState';
 
 interface CollisionApi {
   detectCircleCircleCollision: (c1: Circle, c2: Circle) => boolean;
-  detectCircleRectCollision: (c: Circle, rect: Rect) => boolean;
-  detectedHeroComets: (hero: Hero, comets: Comet[]) => boolean;
+  detectCircleHeroCollision: (c: Circle, hero: Hero) => boolean;
   detected: (state: GameState) => boolean;
   polyCircle: (
     vertices: Location[],

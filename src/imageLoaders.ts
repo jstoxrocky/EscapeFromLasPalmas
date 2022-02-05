@@ -1,6 +1,4 @@
 const imageUrls: string[] = [
-  '../assets/car/small.png',
-  '../assets/car/large.png',
   '../assets/misc/background.png',
   '../assets/misc/comet.png',
 ];

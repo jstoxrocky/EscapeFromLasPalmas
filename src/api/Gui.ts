@@ -4,6 +4,7 @@ interface Gui {
   assets: HTMLImageElement[];
   nightImages: HTMLImageElement[];
   dayImages: HTMLImageElement[];
+  carImages: HTMLImageElement[];
   fonts: FontFace[];
 }
 

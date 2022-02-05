@@ -3,15 +3,17 @@ import ImgIndex from './api/ImageIndex';
 import BaseDrawer from './BaseDrawer';
 import {canvasWidth, canvasHeight} from './screensize';
 import defaultCopy from './defaultCopy';
+import carIndex from './commandCenter';
+import offsets from './offsets';
 
 const Drawer: DrawerApi = {
 
   drawHero: (gui, hero) => {
-    const img = gui.assets[hero.imageIndex];
+    const img = gui.carImages[0];
     gui.ctx.drawImage(img, hero.loc.x, hero.loc.y);
     if (hero.isBraking) {
-      const x = hero.loc.x + 5;
-      const y = hero.loc.y + hero.height / 2;
+      const x = hero.loc.x + offsets[carIndex].brakelights.x;
+      const y = hero.loc.y + offsets[carIndex].brakelights.y;
       const radiusSmall = 10;
       const radiusLarge = 20;
       const alphaSmall = 0.35;
@@ -25,7 +27,7 @@ const Drawer: DrawerApi = {
 
   drawExhaust: (gui, exhaustClouds) => {
     exhaustClouds.forEach(exhaust => {
-      BaseDrawer.drawCircle(gui, exhaust.loc.x, exhaust.loc.y, exhaust.radius, exhaust.color);
+      BaseDrawer.drawCircle(gui, exhaust.loc.x, exhaust.loc.y, exhaust.radius, exhaust.alphaColor.color());
     });
   },
 
@@ -63,8 +65,8 @@ const Drawer: DrawerApi = {
   },
 
   drawHeadlights: (gui, hero, foreground) => {
-    const headlightX = hero.loc.x + hero.width;
-    const headlightY = hero.loc.y + hero.height / 2;
+    const headlightX = hero.loc.x + offsets[carIndex].headlights.x;
+    const headlightY = hero.loc.y + offsets[carIndex].headlights.y;
     const headlightXRange = 500;
     const headlightUpperYRange = headlightY - 250
     const headlightLowerYRange = headlightY + 70
@@ -108,7 +110,7 @@ const Drawer: DrawerApi = {
     const heightOfAThird = canvasHeight * 0.33;
 
     // Car
-    const img = gui.assets[ImgIndex.Large];
+    const img = gui.carImages[1];
     const targetCarWidth = canvasWidth * 0.9;
     
     // Copy
@@ -137,44 +139,43 @@ const Drawer: DrawerApi = {
     const heightOfAThird = canvasHeight * 0.33;
 
     // Car
-    const img = gui.assets[ImgIndex.Large];
-    const targetCarWidth = canvasWidth * 0.9;
-    const ratio = targetCarWidth / img.width;
-    const targetCarHeight = img.height * ratio; // Apply same ration to height
+    const img = gui.carImages[1];
     
     // Origins and heights
+    // Car
+    const carOrigin = (canvasHeight - img.height) / 2;
+    const carHeight = img.height;
+
+    // RIP
     const topBufferOrigin = 0;
     const topBufferHeight = heightOfAThird * 0.1;
     const ripOrigin = topBufferOrigin + topBufferHeight;
-    const ripHeight = heightOfAThird * 0.6;
-    const dateOrigin = ripOrigin + ripHeight;
-    const dateHeight = heightOfAThird - topBufferHeight - ripHeight;
-    const carOrigin = dateOrigin + dateHeight;
-    const carHeight = targetCarHeight;
+    const ripHeight = carOrigin - ripOrigin;
+    
+    // Score
     const scoreOrigin = carOrigin + carHeight;
-    const scoreHeight = dateHeight;
+    const scoreHeight = 0.5 * (canvasHeight - scoreOrigin);
+
+    // Ok
     const startOrigin = scoreOrigin + scoreHeight;
     const startHeight = canvasHeight - startOrigin;
 
     // Font sizes
     const ripFontSize = ripHeight * 0.9;
-    const dateFontSize = dateHeight * 0.3;
-    const scoreFontSize = scoreHeight * 0.25;
+    const scoreFontSize = scoreHeight * 0.20;
 
     // Font
     const scoreFont = `${scoreFontSize}px ${fontFace}`;
 
     // Copy
     const ripCopy = `RIP`;
-    const dateCopy = `1994 - ${new Date().getFullYear()}`
     const scoreCopy = `You were killed by flying molten lava after travelling ${score}m`
     const scorePhrases = Drawer.breakCopyIntoPhrases(gui.ctx, scoreCopy, scoreFont, canvasWidth * 0.75);
 
     const drawRip = () => BaseDrawer.drawCenteredText(gui, ripCopy, ripOrigin, ripHeight, ripFontSize);
-    const drawCar = () => BaseDrawer.drawCenteredImage(gui, img, carOrigin, targetCarWidth);
-    const drawDate = () => BaseDrawer.drawCenteredText(gui, dateCopy, dateOrigin, dateHeight, dateFontSize);
+    const drawCar = () => BaseDrawer.drawCenteredImage(gui, img, carOrigin, img.width);
     const drawScore = () => BaseDrawer.drawCenteredPhrases(gui, scorePhrases, scoreOrigin, scoreHeight, scoreFontSize);
-    return [drawRip, drawCar, drawDate, drawScore, startOrigin, startHeight];   
+    return [drawRip, drawCar, drawScore, startOrigin, startHeight];   
   },
 
   breakCopyIntoPhrases: (

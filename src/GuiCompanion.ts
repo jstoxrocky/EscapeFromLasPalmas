@@ -7,6 +7,7 @@ interface GuiCompanion {
         assets: HTMLImageElement[],
         nightImages: HTMLImageElement[],
         dayImages: HTMLImageElement[],
+        carImages: HTMLImageElement[],
         fonts: FontFace[],
     ) => Gui
 }
@@ -25,6 +26,7 @@ const guiCompanion: GuiCompanion = {
         assets,
         nightImages,
         dayImages,
+        carImages,
         fonts,
     ) => {
         canvas.width = canvasWidth;
@@ -37,6 +39,7 @@ const guiCompanion: GuiCompanion = {
             assets,
             nightImages,
             dayImages,
+            carImages,
             fonts,
         };
     },

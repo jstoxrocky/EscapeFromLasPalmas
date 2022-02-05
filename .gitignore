@@ -3,11 +3,13 @@ node_modules
 coverage
 coverage.json
 typechain
-assets
-.parcel-cache
 
 #Hardhat files
 cache
 artifacts
+
+assets
+.parcel-cache
 dist
 .DS_Store
+public/test.html

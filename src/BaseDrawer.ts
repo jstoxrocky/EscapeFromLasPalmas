@@ -78,10 +78,10 @@ const BaseDrawer: BaseDrawerApi = {
 
     clearScreen: (gui) => {
         BaseDrawer.eraseAllScreen(gui)
-        BaseDrawer.fillBackground(gui, '#1e1d12');
+        BaseDrawer.fillBackground(gui, '#12110b');
     },
 
-    eraseScreen: (gui, xOrigin, yOrigin, xLimit, yLimit) => {
+    eraseScreen: (gui) => {
         gui.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     },
 
@@ -90,7 +90,7 @@ const BaseDrawer: BaseDrawerApi = {
     },
 
     fillDefaultBackground: (gui) => {
-        BaseDrawer.fillBackground(gui, '#1e1d12');
+        BaseDrawer.fillBackground(gui, '#12110b');
     },
 
     fillBackground: (gui, color) => {

@@ -1,5 +1,6 @@
 import ForegroundCompanionApi from './api/ForegroundCompanionApi';
 import Plane from './api/Plane';
+import { canvasHeight } from './screensize';
 
 const SPEED = -5;
 const WIDTH = 762;
@@ -21,7 +22,7 @@ const TOP_BUFFER = -50; // 20
 // brightnes -15
 
 const ForegroundCompanion: ForegroundCompanionApi = {
-  new: (canvasHeight) => {
+  new: () => {
     const defaultImageIndex = 0;
     const forePlane = { loc: { x: 0, y: canvasHeight - HEIGHT + TOP_BUFFER }, imageIndex: defaultImageIndex };
     const midPlane = { loc: { x: 0, y: canvasHeight - HEIGHT + TOP_BUFFER - MID_OFFSET }, imageIndex: defaultImageIndex };

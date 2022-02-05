@@ -1,6 +1,9 @@
 import CollisionApi from './api/CollisionApi';
 import Circle from './api/Circle';
-import Rect from './api/Rect';
+import Hero from './api/Hero';
+import carIndex from "./commandCenter";
+import offsets from './offsets';
+
 
 // http://www.jeffreythompson.org/collision-detection/poly-circle.php
 const Collision: CollisionApi = {
@@ -9,16 +12,12 @@ const Collision: CollisionApi = {
     return dist - c1.radius - c2.radius < 1;
   },
 
-  detectCircleRectCollision: (c: Circle, r: Rect) => {
-    const v1 = { x: r.loc.x + 3, y: r.loc.y + 46 };
-    const v2 = { x: r.loc.x + 4, y: r.loc.y + 35 };
-    const v3 = { x: r.loc.x + 11, y: r.loc.y + 25 };
-    const v4 = { x: r.loc.x + 49, y: r.loc.y + 25 };
-    const v5 = { x: r.loc.x + 58, y: r.loc.y + 32 };
-    const v6 = { x: r.loc.x + 78, y: r.loc.y + 37 };
-    const v7 = { x: r.loc.x + 78, y: r.loc.y + 44 };
+  detectCircleHeroCollision: (c: Circle, hero: Hero) => {
+    const shape = offsets[carIndex].shape.map(car => {
+      return { x: hero.loc.x + car.x, y: hero.loc.y + car.y }
+    })
     return Collision.polyCircle(
-      [v1, v2, v3, v4, v5, v6, v7],
+      shape,
       c.loc.x,
       c.loc.y,
       c.radius,
@@ -26,17 +25,15 @@ const Collision: CollisionApi = {
   },
 
   detected: (state) => {
-    return Collision.detectedHeroComets(state.hero, state.comets)
-  },
-
-  detectedHeroComets: (hero, comets) => {
-    const [comet, ...tail] = comets;
-    if (typeof comet === 'undefined') {
-      return false;
+    const loop = (comets: Circle[], hero: Hero): boolean => {
+      const [comet, ...tail] = comets;
+      if (typeof comet === 'undefined') {
+        return false;
+      }
+      return Collision.detectCircleHeroCollision(comet, hero) || loop(tail, hero);
     }
-    return Collision.detectCircleRectCollision(comet, hero)
-      ? true
-      : Collision.detectedHeroComets(hero, tail);
+
+    return loop(state.comets, state.hero);
   },
 
   polyCircle: (vertices, cx, cy, r) => {
