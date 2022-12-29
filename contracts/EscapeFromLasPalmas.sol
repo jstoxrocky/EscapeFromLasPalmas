@@ -5,7 +5,7 @@ contract EscapeFromLasPalmas {
     address public owner;
     uint8 public tokenIdCounter;
     uint256 public price = 1000000000000000; // 0.001 ether
-    uint256 public maxSupply = 100;
+    uint256 public maxSupply = 10;
 
     constructor() {
         owner = msg.sender;
@@ -56,8 +56,12 @@ contract EscapeFromLasPalmas {
     string public symbol = "EFLP";
 
     function tokenURI(uint256 _tokenId) public pure returns (string memory) {
-        string memory htmlUri = 'https://billybones.s3.amazonaws.com/public/test.html';
-        string memory json = string(abi.encodePacked('{"name": "", "description": "", "animation_url": "', htmlUri, '"}'));
+        string memory tokenIdHex = toHexString(_tokenId, 1);
+        string memory nameWithTokenId = string(abi.encodePacked('"Escape From Las Palmas ', tokenIdHex, '"'));
+        string memory copy = "Kids shriek and tires screech as hot hellfire rains down from Europe's deadliest volcano. Can you escape from Las Palmas?";
+        string memory description = string(abi.encodePacked('"', copy, '"'));
+        string memory htmlUri = string(abi.encodePacked('https://billybones.s3.amazonaws.com/public/eflp', tokenIdHex, '.html'));
+        string memory json = string(abi.encodePacked('{"name": ', nameWithTokenId, ', "description": ', description, ', "animation_url": "', htmlUri, '"}'));
         string memory jsonUri = string(abi.encodePacked("data:application/json;base64,", base64Encode(bytes(json))));  
         return jsonUri;
     }
@@ -91,6 +95,19 @@ contract EscapeFromLasPalmas {
     function withdraw() public {
         (bool success, ) = payable(owner).call{value: address(this).balance}("");
         require(success, "WITHDRAW_ERROR");
+    }
+
+    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+        bytes16 _SYMBOLS = "0123456789abcdef";
+        bytes memory buffer = new bytes(2 * length + 2);
+        buffer[0] = "0";
+        buffer[1] = "x";
+        for (uint256 i = 2 * length + 1; i > 1; --i) {
+            buffer[i] = _SYMBOLS[value & 0xf];
+            value >>= 4;
+        }
+        require(value == 0, "Strings: hex length insufficient");
+        return string(buffer);
     }
 
     function base64Encode(bytes memory data) internal pure returns (string memory) {

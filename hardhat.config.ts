@@ -14,12 +14,8 @@ const privateKey = process.env.EFLP_PRIVATE_KEY ? process.env.EFLP_PRIVATE_KEY :
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
   networks: {
-    ropsten: {
-      url: process.env.EFLP_ROPSTEN_URL,
-      accounts: [privateKey]
-    },
-    rinkeby: {
-      url: process.env.EFLP_RINKEBY_URL,
+    goerli: {
+      url: process.env.EFLP_GOERLI_URL,
       accounts: [privateKey]
     },
     mainnet: {

@@ -20,7 +20,7 @@ const Controller = {
     
     const showProduction = async (): Promise<void>  => {
       BaseDrawer.clearScreen(gui);
-      const copy = "a joeyblaze production"
+      const copy = "joey stockermans 2022"
       const origin = canvasHeight * 0.33;
       const divHeight = canvasHeight * 0.33;
       const fontSize = divHeight * 0.12;    

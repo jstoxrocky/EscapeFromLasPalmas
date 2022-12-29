@@ -55,12 +55,22 @@ describe('EscapeFromLasPalmas', () => {
         const from = '0x0000000000000000000000000000000000000000'
         const to = owner.address
         const tokenId = 1 // indexed starting at 1
+        const price = ethers.utils.parseEther("0.001");
 
-        await expect(contract.mint())
+        await expect(contract.mint({ value: price }))
           .to.emit(contract, "Transfer")
           .withArgs(from, to, tokenId);
 
-        // increment the token counter
+        // TODO test increment the token counter
+    });
+
+    it('tokenURI ', async () => {
+      const tokenId = 1 // indexed starting at 1
+      const price = ethers.utils.parseEther("0.001");
+
+      await contract.mint({ value: price })
+      const tokenUri = await contract.tokenURI(tokenId) 
+      console.log("tokenUri", tokenUri)
     });
 
     it('Should throw if less than 0.001 ETH is supplied', async () => {});
